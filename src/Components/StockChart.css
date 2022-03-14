@@ -1,0 +1,111 @@
+.stockChart-box{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:2rem;
+    background-color:white;
+    margin:4rem 2rem;
+    border-radius:20px;
+}
+
+.chart-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:600px;
+    height:100px;
+}
+
+.chart-info{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:space-evenly;
+    width:max-content;
+    font-family: 'Alata';
+}
+
+.stockchart-name{
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0em;
+    text-align: left;
+    color:#535353;
+}
+.stockchart-symbol{
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0em;
+    text-align: left;
+    color:#959595;
+}
+
+.stockchart-price{
+    font-family: 'Outfit';
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 38px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #3C3C3C;
+}
+
+.stockchart-change{
+    font-family: 'Outfit';
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #03A363;
+}
+
+.predicted-price{
+    font-family: 'Outfit';
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 38px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #007bac;
+    margin-left:25px;
+}
+
+.red{
+    color:red;
+}
+.green{
+    color:rgba(3,163,99,1);
+}
+
+.datetime{
+    font-family: 'Alata';
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0em;
+    text-align: right;
+    color:#868686;
+}
+
+.square{
+    width:8px;height:8px;
+    margin:5px;
+}
+
+.black{
+    background-color:black;
+}
+.blue{
+    background-color:#007bac;
+}
