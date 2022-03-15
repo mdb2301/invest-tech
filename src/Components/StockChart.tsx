@@ -31,18 +31,23 @@ export default function StockChart(
 
     return <div className='stockChart-box'>
         <div className="chart-top">
-            <div className="chart-info">
-                <p className='stockchart-name'>{stock.name}&nbsp; <span className='stockchart-symbol'>{stock.symbol}</span></p>
-                <p className="stockchart-price">{stock.price}&nbsp; <span className={'stockchart-change '+(stock.change>0?"green":"red")}>{(stock.change>0?"+":"")+stock.change +" " + (stock.changePercent>0?"+":"")+stock.changePercent+"%"}</span><span className="predicted-price">{stock.predictedPrice}</span></p>                
-            </div>
+            <p className='stockchart-name'>{stock.name}&nbsp; <span className='stockchart-symbol'>{stock.symbol}</span></p>
             <DateTime time={time}/>
         </div>
-        <img src={chart} alt="Chart" style={{width:'600px',margin:'2rem 0'}}/>  
-        <div style={{display:'flex',alignItems:'center',justifyContent:'flex-start'}}>
-            <div className="square black">&nbsp;</div> Current Price 
-            <div style={{width:'15px'}}>&nbsp;</div>
-            <div className="square blue">&nbsp;</div> Predicted Price   
-        </div>        
+        <div className="price-chart">
+            <div className="price-box">
+                <p className="price-box-title">Current</p>
+                <p className="stockchart-price">{stock.price}</p>
+                <p className={"stockchart-change "+(stock.change>0?"green":"red")}>{(stock.change>0?"+":"")+stock.change+" "+(stock.change>0?"+":"")+stock.changePercent}</p>
+            </div>
+            <div className="price-box">
+                <p className="price-box-title"> <span style={{fontFamily:'Outfit'}}>1</span> -Day Ahead</p>
+                <p className="stockchart-price">{stock.price}</p>
+                <p className={"stockchart-change "+(stock.change>0?"green":"red")}>{(stock.change>0?"+":"")+stock.change+" "+(stock.change>0?"+":"")+stock.changePercent}</p>
+
+            </div>
+        </div>
+        <img src={chart} alt="Chart" style={{width:'600px',margin:'2rem 0'}}/>         
     </div>
 }
 

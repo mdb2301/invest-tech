@@ -4,7 +4,7 @@
     align-items:center;
     justify-content:center;
     position:relative;
-    padding:2rem;
+    padding:0 2rem;
     background-color:white;
     margin:4rem 2rem;
     border-radius:20px;
@@ -14,7 +14,7 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    width:600px;
+    width:700px;
     height:100px;
 }
 
@@ -46,9 +46,41 @@
     color:#959595;
 }
 
+.price-chart{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    align-self:flex-start;
+}
+
+.price-box{
+    background: #FFFFFF;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    width:190px;
+    height:100px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-evenly;
+    padding:0.5rem;
+    margin:0 1rem;
+}
+
+.price-box-title{
+    font-family: 'Alata';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: center;
+    color:#868686;
+}
+
 .stockchart-price{
     font-family: 'Outfit';
-    font-size: 30px;
+    font-size: 25px;
     font-style: normal;
     font-weight: 500;
     line-height: 38px;
@@ -65,7 +97,6 @@
     line-height: 19px;
     letter-spacing: 0em;
     text-align: left;
-    color: #03A363;
 }
 
 .predicted-price{
@@ -98,14 +129,3 @@
     color:#868686;
 }
 
-.square{
-    width:8px;height:8px;
-    margin:5px;
-}
-
-.black{
-    background-color:black;
-}
-.blue{
-    background-color:#007bac;
-}
