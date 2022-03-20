@@ -1,9 +1,7 @@
 import './Watchlist.css'
-import green from '../assets/green.svg'
-import red from '../assets/red.svg'
 import { useState } from 'react'
 import $ from 'jquery'
-
+import { AreaChart,XAxis,YAxis,Area } from 'recharts'
 
 export default function Watchlist(
     {onClick,data}:
@@ -12,7 +10,7 @@ export default function Watchlist(
         data:{
             name: string;
             symbol: string;
-            price: number;
+            lastPrice: number;
             change: number;
             changePercent: number;
             logo: string;
@@ -24,6 +22,15 @@ export default function Watchlist(
             high52: number;
             low52: number;
             cap: string;
+            history:{
+                date: number;
+                open: number;
+                high: number;
+                low: number;
+                close: number;
+                adjClose: number;
+                volume: number;
+            }[];
         }[]
     }
 ){
@@ -46,34 +53,55 @@ export default function Watchlist(
             <div className="next" onClick={()=>{
                     toggleShowNext(false)
                     toggleShowPrev(true)
-                    $('.watchList').scrollLeft(450)
+                    $('.watchList').scrollLeft(800)
                 }}>
                 <i className='bx bx-chevron-right'></i>
             </div>
         </div>
-        <div className="watchList">
-            {
-                data.map((el,i)=>{
-                    return <WatchlistItem 
-                        name={el.name}
-                        symbol={el.symbol}
-                        logo={el.logo}
-                        price={el.price}
-                        change={el.changePercent}
-                        key={el.name}
-                        onClick={()=>{
-                            onClick(i)
-                        }}
-                    />
-                })
-            }
-        </div>
+        {
+            data!=null ?
+            <div className="watchList">
+                {
+                    data.map((el,i)=>{
+                        return <WatchlistItem 
+                            name={el.name}
+                            symbol={el.symbol}
+                            logo={el.logo}
+                            price={el.lastPrice}
+                            change={el.changePercent}
+                            key={el.symbol}
+                            history={el.history}
+                            onClick={()=>{
+                                onClick(i)
+                            }}
+                        />
+                    })
+                }
+            </div>:
+            <div></div>
+        }
     </div>
 }
 
 function WatchlistItem(
-    {name,symbol,logo,price,change,onClick}:
-    {name:string,symbol:string,logo:string,price:number,change:number,onClick:Function}
+    {name,symbol,logo,price,change,onClick,history}:
+    {
+        name:string,
+        symbol:string,
+        logo:string,
+        price:number,
+        change:number,
+        onClick:Function,
+        history:{
+            date:number;
+            open:number;
+            high:number;
+            close:number;
+            low:number;
+            adjClose:number;
+            volume:number;
+        }[];
+    }
 ){
     return <div className="watchlistItem" onClick={()=>onClick()}>
         <div className="watchlistItem-top">
@@ -89,11 +117,16 @@ function WatchlistItem(
                 <p className='price'>{price}</p>
                 <p className={"price-change "+(change>0?"green":'red')}>{change+"%"}</p>
             </div>
-            {
-                change>0?
-                <img src={green} alt="Green" style={{width:'160px',height:'75px',marginLeft:'1rem'}}/>:
-                <img src={red} alt="Red" style={{width:'160px',height:'75px',marginLeft:'1rem'}}/>
-            }
+            <AreaChart
+                width={250}
+                height={120}
+                data={history}
+                style={{marginTop:'20px',cursor:'pointer'}}                
+                >
+                <XAxis dataKey="date" tick={false}/>
+                <YAxis dataKey="close" tick={false}/>
+                <Area type="monotone" dataKey="close" stroke={change>0?"#03A363":"#FF5353"} fill={change>0?"#7affca":"#ffbaba"} />
+            </AreaChart>
         </div>
     </div>
 }

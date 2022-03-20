@@ -5,7 +5,7 @@ export default function DetailsBox(
     {stock:{
         name: string;
         symbol: string;
-        price: number;
+        lastPrice: number;
         change: number;
         changePercent: number;
         logo: string;
@@ -20,9 +20,10 @@ export default function DetailsBox(
         predictedPrice:number;
     }}
 ){
-    return <div className="details-box">
+    return stock!=null?
+    <div className="details-box">
         <h3 className='details-title'>Details</h3>
-        <div style={{height:'1rem;'}}>&nbsp;</div>
+        <div style={{height:'1rem'}}>&nbsp;</div>
         <DetailItem label="Open" value={stock.open.toString()}/>
         <DetailItem label="Previous Close" value={stock.previousClose.toString()}/>
         <DetailItem label="Day High" value={stock.dayHigh.toString()}/>
@@ -31,7 +32,8 @@ export default function DetailsBox(
         <DetailItem label="52-week High" value={stock.high52.toString()}/>
         <DetailItem label="52-week Low" value={stock.low52.toString()}/>
         <DetailItem label="Market Cap" value={stock.cap}/>
-    </div>
+    </div>:
+    <div></div>
 }
 
 function DetailItem({label,value}:{label:string,value:string}){
