@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import time
 import datetime
+from StockPredictor import Predictor,PredictorEntity
 
 stocks = {
     'TATAMOTORS':{
@@ -25,6 +26,11 @@ stocks = {
     'ADANIPORTS':{
         'name':'Adani Ports & SEZ',
         'image':"https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Adani_Ports_Logo.svg/1200px-Adani_Ports_Logo.svg.png"
+    },
+    'BAJAJAUTO':{
+        'name':'Bajaj Auto',
+        'image':"https://e7.pngegg.com/pngimages/552/21/png-clipart-bajaj-auto-logo-motorcycle-company-company-logo-blue-text.png",
+        'constant':199
     }
 }
 
@@ -39,9 +45,6 @@ headers =  {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,ima
     "sec-fetch-user": "?1",
     "upgrade-insecure-requests": "1",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36"}
-
-def get_data(ticker):
-    pass
 
 def get_info(ticker):
     res = requests.get(
@@ -75,46 +78,70 @@ def get_info(ticker):
 
     return Stock(ticker, stocks[ticker]['name'], lastPrice, change, percent_change, dayHigh, dayLow, high52, low52, openPrice, 0, volume, cap, previousClose, stocks[ticker]['image'],lastPrice,json.loads(df.to_json(orient='records')))
 
+def get_info_basic(ticker):
+    df = pd.read_csv(f"datasets\\{ticker}.csv")
+    df = df[::-1]
+    predictor_entity = PredictorEntity(name=ticker)
+    machine = Predictor(df,predictor_entity)
+    machine.load_model(filepath=f"models\\1.4398081412555481.h5")
+    res = machine.res
+    if stocks[ticker]['constant']!=None:
+        res['y_pred'] = res['y_pred'] - (res['abs_error'].mean()*stocks[ticker]['constant']/res['abs_error'].max())
+    res['abs_error'] = abs(res['y_test'] - res['y_pred'])
+    res['percent_error'] = res['abs_error'] * 100 / res['y_test']
+
+    change = df['CLOSE'][len(df)-2] - df['CLOSE'][len(df)-1]
+
+    res.columns = [x.lower() for x in res.columns]
+
+    return Stock(
+        code=ticker, 
+        name=stocks[ticker]['name'], 
+        change=round(change,2), 
+        percent_change=round(change*100/df['CLOSE'][len(df)-2],2), 
+        dayHigh=round(df['HIGH'][len(df)-1],2), 
+        dayLow=round(df['LOW'][len(df)-1],2), 
+        openPrice=round(df['OPEN'][len(df)-1],2), 
+        closePrice=round(df['CLOSE'][len(df)-1],2), 
+        volume=df['VOLUME'][len(df)-1], 
+        previousClose=round(df['CLOSE'][len(df)-2],2), 
+        logo=stocks[ticker]['image'], 
+        pred_data=json.loads(res.to_json(orient='records')),
+        lastDate=df['DATE'][len(df)-1]
+    )
+
 
 class Stock():
-    def __init__(self,code,name,lastPrice,change,percent_change,dayHigh,dayLow,high52,low52,openPrice,closePrice,volume,cap,previousClose,logo,predicted_price,history):
+    def __init__(self,code,name,change,percent_change,dayHigh,dayLow,openPrice,closePrice,volume,previousClose,logo,pred_data,lastDate):
         self.code = code
         self.name = name
-        self.lastPrice = lastPrice
         self.change = float(change)
         self.percent_change = float(percent_change)
         self.dayHigh = dayHigh
         self.dayLow = dayLow
-        self.high52 = high52
-        self.low52 = low52
         self.openPrice = openPrice
         self.closePrice = closePrice
         self.volume = volume
-        self.cap = cap
         self.previousClose = previousClose
         self.logo = logo
-        self.predicted_price = predicted_price
-        self.history = history
+        self.pred_data = pred_data
+        self.lastDate = lastDate
 
     def __repr__(self):
         return self.name + " : " + str(self.lastPrice) + " "+ str(self.change)
 
     def to_json(self):
         return {
-            'symbol':self.code,
+            'code':self.code,
             'name':self.name,
-            'lastPrice':self.lastPrice,
             'change':self.change,
             'changePercent':self.percent_change,
             'dayHigh':self.dayHigh,
             'dayLow':self.dayLow,
-            'high52':self.high52,
-            'low52':self.low52,
             'open':self.openPrice,
             'close':self.closePrice,
             'volume':self.volume,
-            'cap':self.cap,
             'previousClose':self.previousClose,
             'logo':self.logo,
-            'history':self.history
+            'pred_data':self.pred_data
         }

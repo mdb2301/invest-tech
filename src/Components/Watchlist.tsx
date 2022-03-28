@@ -2,36 +2,13 @@ import './Watchlist.css'
 import { useState } from 'react'
 import $ from 'jquery'
 import { AreaChart,XAxis,YAxis,Area } from 'recharts'
+import Stock from '../models/Stock'
 
 export default function Watchlist(
     {onClick,data}:
     {
         onClick:Function,
-        data:{
-            name: string;
-            symbol: string;
-            lastPrice: number;
-            change: number;
-            changePercent: number;
-            logo: string;
-            open: number;
-            previousClose: number;
-            dayHigh: number;
-            dayLow: number;
-            volume: number;
-            high52: number;
-            low52: number;
-            cap: string;
-            history:{
-                date: number;
-                open: number;
-                high: number;
-                low: number;
-                close: number;
-                adjClose: number;
-                volume: number;
-            }[];
-        }[]
+        data:Stock[]
     }
 ){
 
@@ -64,13 +41,8 @@ export default function Watchlist(
                 {
                     data.map((el,i)=>{
                         return <WatchlistItem 
-                            name={el.name}
-                            symbol={el.symbol}
-                            logo={el.logo}
-                            price={el.lastPrice}
-                            change={el.changePercent}
-                            key={el.symbol}
-                            history={el.history}
+                            stock={el}
+                            key={el.code}
                             onClick={()=>{
                                 onClick(i)
                             }}
@@ -84,48 +56,36 @@ export default function Watchlist(
 }
 
 function WatchlistItem(
-    {name,symbol,logo,price,change,onClick,history}:
+    {stock,onClick}:
     {
-        name:string,
-        symbol:string,
-        logo:string,
-        price:number,
-        change:number,
         onClick:Function,
-        history:{
-            date:number;
-            open:number;
-            high:number;
-            close:number;
-            low:number;
-            adjClose:number;
-            volume:number;
-        }[];
+        stock:Stock
     }
 ){
     return <div className="watchlistItem" onClick={()=>onClick()}>
         <div className="watchlistItem-top">
             <div className='company-title'>
-                <img src={logo} alt={name} className='companyLogo'/>
-                <p style={{marginLeft:'10px'}}>{name}</p>
+                <img src={stock.logo} alt={stock.name} className='companyLogo'/>
+                <p style={{marginLeft:'10px'}}>{stock.name}</p>
             </div>
             <div style={{flex:1}}>&nbsp;</div>
-            <p style={{fontSize:'10px',color:'rgba(46,46,46,1)'}}>{symbol}</p>
+            <p style={{fontSize:'10px',color:'rgba(46,46,46,1)'}}>{stock.code}</p>
         </div>
         <div className="watchlist-info">
             <div className='price-holder'>
-                <p className='price'>{price}</p>
-                <p className={"price-change "+(change>0?"green":'red')}>{change+"%"}</p>
+                <p className='price'>{stock.close.toFixed(2)}</p>
+                <p className={"price-change "+(stock.change>0?"green":'red')}>{stock.change.toFixed(2)+"%"}</p>
             </div>
             <AreaChart
                 width={250}
                 height={120}
-                data={history}
+                data={stock.pred_data}
                 style={{marginTop:'20px',cursor:'pointer'}}                
                 >
                 <XAxis dataKey="date" tick={false}/>
                 <YAxis dataKey="close" tick={false}/>
-                <Area type="monotone" dataKey="close" stroke={change>0?"#03A363":"#FF5353"} fill={change>0?"#7affca":"#ffbaba"} />
+                <Area type="monotone" dataKey="y_test" stroke={stock.change>0?"#03A363":"#FF5353"} fill={stock.change>0?"#7affca":"#ffbaba"} />
+                <Area type="monotone" dataKey="y_pred" stroke="#1989fa" fill="transparent" />
             </AreaChart>
         </div>
     </div>
